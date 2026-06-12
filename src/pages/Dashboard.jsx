@@ -6,6 +6,7 @@ import { Brain, ArrowRight, Sparkles, BookOpen, Trophy, Flame, Target, Zap, Tren
 import PageLayout from '../components/PageLayout'
 import { useApp, getWeakTopics, getLevelName, getNextLevelXP, getXPForLevel, getWeeklyChartData } from '../context/AppContext'
 import { SUBJECT_LIST } from '../data/subjects'
+import { isClerkEnabled } from '../lib/clerk'
 
 const Tip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
@@ -132,6 +133,7 @@ const getLearningDNA = (quizHistory, topicScores, streak, maxStreak) => {
 // 3-Step Onboarding Modal Component
 function OnboardingModal({ isOpen, onClose }) {
   const { dispatch } = useApp()
+  const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [subjects, setSubjects] = useState([])
   const [confidence, setConfidence] = useState('intermediate')
@@ -158,6 +160,19 @@ function OnboardingModal({ isOpen, onClose }) {
     onClose()
   }
 
+  const handleCancelSignOut = async () => {
+    dispatch({ type: 'LOGOUT' })
+    if (isClerkEnabled() && window.Clerk) {
+      try {
+        await window.Clerk.signOut()
+      } catch (e) {
+        console.error('Clerk logout error:', e)
+      }
+    }
+    onClose()
+    navigate('/login')
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
       <motion.div
@@ -170,10 +185,19 @@ function OnboardingModal({ isOpen, onClose }) {
         
         <div className="mb-4 flex justify-between items-center">
           <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider">Onboarding — Step {step} of 3</span>
-          <div className="flex gap-1">
-            {[1, 2, 3].map(s => (
-              <div key={s} className={`w-6 h-1 rounded-full transition-all ${step >= s ? 'bg-indigo-500' : 'bg-white/10'}`} />
-            ))}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleCancelSignOut}
+              className="text-[10px] font-mono text-red-400 hover:text-red-300 uppercase tracking-wider transition-colors"
+            >
+              Cancel / Logout
+            </button>
+            <div className="flex gap-1">
+              {[1, 2, 3].map(s => (
+                <div key={s} className={`w-6 h-1 rounded-full transition-all ${step >= s ? 'bg-indigo-500' : 'bg-white/10'}`} />
+              ))}
+            </div>
           </div>
         </div>
 

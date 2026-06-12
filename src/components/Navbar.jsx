@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LayoutDashboard, Brain, BarChart3, BookOpen, LogOut, Menu, X, Zap, Trophy, Sparkles } from 'lucide-react'
 import { useApp, getLevelName } from '../context/AppContext'
+import { isClerkEnabled } from '../lib/clerk'
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -18,7 +19,17 @@ export default function Navbar() {
   const { state, dispatch } = useApp()
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  const handleLogout = () => { dispatch({ type: 'LOGOUT' }); navigate('/login') }
+  const handleLogout = async () => {
+    dispatch({ type: 'LOGOUT' })
+    if (isClerkEnabled() && window.Clerk) {
+      try {
+        await window.Clerk.signOut()
+      } catch (e) {
+        console.error('Clerk logout error:', e)
+      }
+    }
+    navigate('/login')
+  }
 
   const nextLevelXP = 250
   const xpPercent = Math.min(100, Math.round((state.xp / nextLevelXP) * 100))
