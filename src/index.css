@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-void text-white font-body antialiased;
+    background-color: #080a0f;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0d1117;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1e2a3a;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00d4ff44;
+  }
+
+  ::selection {
+    background: #00d4ff33;
+    color: #00d4ff;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border rounded-2xl;
+  }
+
+  .btn-primary {
+    @apply bg-accent text-void font-display font-semibold px-6 py-3 rounded-xl
+           hover:bg-accent-dim transition-all duration-200 shadow-glow-sm
+           hover:shadow-glow active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply border border-border text-soft font-body px-6 py-3 rounded-xl
+           hover:border-accent/40 hover:text-white transition-all duration-200
+           active:scale-95;
+  }
+
+  .input-field {
+    @apply bg-surface border border-border rounded-xl px-4 py-3 text-white
+           placeholder-muted font-body focus:outline-none focus:border-accent/60
+           focus:ring-1 focus:ring-accent/20 transition-all duration-200 w-full;
+  }
+
+  .topic-badge {
+    @apply text-xs font-mono px-2.5 py-1 rounded-lg border;
+  }
+
+  .nav-link {
+    @apply text-soft hover:text-white transition-colors duration-200 font-body text-sm;
+  }
+
+  .section-title {
+    @apply font-display font-bold text-white tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-accent-gradient;
+  }
+
+  .text-gradient-green {
+    @apply bg-clip-text text-transparent bg-green-gradient;
+  }
+
+  .bg-grid {
+    background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .glow-dot {
+    @apply w-2 h-2 rounded-full bg-neon-green shadow-glow-green;
+  }
+
+  .shimmer-text {
+    background: linear-gradient(90deg, #8892a4 25%, #ffffff 50%, #8892a4 75%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+}
+
+/* Noise texture overlay */
+.noise::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ── Fix scrollbar-none utility ── */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Prevent layout shift on chat scroll ── */
+.chat-container {
+  overflow-anchor: none;
+}
+
+/* ── Smooth page transitions ── */
+.page-transition {
+  will-change: transform, opacity;
+}
+
+/* ── Better glassmorphism cards ── */
+.glass-card {
+  @apply bg-card/70 backdrop-blur-xl border border-border rounded-2xl;
+}
